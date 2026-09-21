@@ -1,5 +1,6 @@
 let currentScale = 1;
 let currentTheme = "light";
+let currentUse24Hour = true;
 let timeText = "08:04";
 let dateText = "MON, SEP 21";
 
@@ -21,7 +22,7 @@ const THEME = {
 function render() {
   const s = currentScale;
   const colors = THEME[currentTheme];
-  const width = Math.round(200 * s);
+  const width = Math.round(250 * s);
   const height = Math.round(115 * s);
 
   ui.beginUpdate();
@@ -80,7 +81,11 @@ function updateClock(data) {
     data.scale !== currentScale || data.theme !== currentTheme;
   if (typeof data.scale === "number") currentScale = data.scale;
   if (THEME[data.theme]) currentTheme = data.theme;
+  if (typeof data.use24Hour === "boolean") currentUse24Hour = data.use24Hour;
   if (typeof data.time === "string") timeText = data.time;
+  if (!currentUse24Hour && typeof data.period === "string") {
+    timeText += " <size=" + Math.round(20 * currentScale) + "><color=" + THEME[currentTheme].date + ">" + data.period + "</color></size>";
+  }
   if (typeof data.date === "string") dateText = data.date;
 
   if (shouldRender) {
@@ -100,6 +105,12 @@ if (startupSettings) {
   if (typeof startupSettings.scale === "number")
     currentScale = startupSettings.scale;
   if (THEME[startupSettings.theme]) currentTheme = startupSettings.theme;
+  if (typeof startupSettings.use24Hour === "boolean") currentUse24Hour = startupSettings.use24Hour;
+  if (typeof startupSettings.time === "string") timeText = startupSettings.time;
+  if (!currentUse24Hour && typeof startupSettings.period === "string") {
+    timeText += " <size=" + Math.round(20 * currentScale) + "><color=" + THEME[currentTheme].date + ">" + startupSettings.period + "</color></size>";
+  }
+  if (typeof startupSettings.date === "string") dateText = startupSettings.date;
 }
 
 render();
@@ -107,6 +118,7 @@ ipcRenderer.on("CleanTime.settings", function (event, settings) {
   if (!settings) return;
   if (typeof settings.scale === "number") currentScale = settings.scale;
   if (THEME[settings.theme]) currentTheme = settings.theme;
+  if (typeof settings.use24Hour === "boolean") currentUse24Hour = settings.use24Hour;
   render();
 });
 ipcRenderer.on("CleanTime.clock", function (event, data) {

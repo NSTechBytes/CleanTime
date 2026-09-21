@@ -2,10 +2,15 @@ import { app, widgetWindow } from "novadesk";
 
 const SCALE_OPTIONS = [0.75, 1, 1.25, 1.5, 1.75, 2];
 const THEME_OPTIONS = ["light", "dark"];
-const STORAGE = { scale: "CleanTime.scale", theme: "CleanTime.theme" };
+const STORAGE = {
+  scale: "CleanTime.scale",
+  theme: "CleanTime.theme",
+  use24Hour: "CleanTime.use24Hour",
+};
 
 let scale = 1;
 let theme = "light";
+let use24Hour = true;
 let clockWindow = null;
 let timer = null;
 
@@ -13,8 +18,10 @@ function loadSettings() {
   try {
     const storedScale = app.storage.get(STORAGE.scale, scale);
     const storedTheme = app.storage.get(STORAGE.theme, theme);
+    const storedUse24Hour = app.storage.get(STORAGE.use24Hour, use24Hour);
     if (SCALE_OPTIONS.indexOf(storedScale) !== -1) scale = storedScale;
     if (THEME_OPTIONS.indexOf(storedTheme) !== -1) theme = storedTheme;
+    if (typeof storedUse24Hour === "boolean") use24Hour = storedUse24Hour;
   } catch (error) {
     console.log("CleanTime could not load its settings:", error);
   }
@@ -45,11 +52,10 @@ function getClockData() {
     "NOV",
     "DEC",
   ];
+  const hours = now.getHours();
+  const displayHours = use24Hour ? hours : (hours % 12 || 12);
   return {
-    time:
-      String(now.getHours()).padStart(2, "0") +
-      ":" +
-      String(now.getMinutes()).padStart(2, "0"),
+    time: String(displayHours).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0"),
     date:
       weekdays[now.getDay()] +
       ", " +
@@ -58,6 +64,8 @@ function getClockData() {
       String(now.getDate()).padStart(2, "0"),
     scale: scale,
     theme: theme,
+    use24Hour: use24Hour,
+    period: hours >= 12 ? "PM" : "AM",
   };
 }
 
@@ -70,7 +78,7 @@ function setScale(value) {
   scale = value;
   save(STORAGE.scale, scale);
   clockWindow.setContextMenu(buildContextMenu());
-  ipcMain.send("CleanTime.settings", { scale: scale, theme: theme });
+  ipcMain.send("CleanTime.settings", { scale: scale, theme: theme, use24Hour: use24Hour });
   publishClock();
 }
 
@@ -79,7 +87,16 @@ function setTheme(value) {
   theme = value;
   save(STORAGE.theme, theme);
   clockWindow.setContextMenu(buildContextMenu());
-  ipcMain.send("CleanTime.settings", { scale: scale, theme: theme });
+  ipcMain.send("CleanTime.settings", { scale: scale, theme: theme, use24Hour: use24Hour });
+  publishClock();
+}
+
+function setTimeFormat(value) {
+  if (typeof value !== "boolean") return;
+  use24Hour = value;
+  save(STORAGE.use24Hour, use24Hour);
+  clockWindow.setContextMenu(buildContextMenu());
+  ipcMain.send("CleanTime.settings", { scale: scale, theme: theme, use24Hour: use24Hour });
   publishClock();
 }
 
@@ -120,6 +137,13 @@ function buildContextMenu() {
         },
       ],
     },
+    {
+      text: "Time Format",
+      items: [
+        { text: "12 Hour", checked: !use24Hour, action: function () { setTimeFormat(false); } },
+        { text: "24 Hour", checked: use24Hour, action: function () { setTimeFormat(true); } },
+      ],
+    },
   ];
 }
 
@@ -128,7 +152,7 @@ loadSettings();
 // The UI requests this synchronously during startup, before it draws its first
 // frame. This prevents the visible 1X-to-saved-scale jump after loading.
 ipcMain.handle("CleanTime.getSettings", function () {
-  return { scale: scale, theme: theme };
+  return getClockData();
 });
 
 clockWindow = new widgetWindow({
@@ -138,7 +162,7 @@ clockWindow = new widgetWindow({
 clockWindow.setContextMenu(buildContextMenu());
 
 ipcMain.on("CleanTime.ready", function () {
-  ipcMain.send("CleanTime.settings", { scale: scale, theme: theme });
+  ipcMain.send("CleanTime.settings", { scale: scale, theme: theme, use24Hour: use24Hour });
   publishClock();
 });
 
