@@ -1,0 +1,22 @@
+{
+  "name": "CleanTime",
+  "main": "index.js",
+  "version": "1.0.0.0",
+  "minimumNovadeskVersion": "0.9.11.0",
+  "author": "Your Name",
+  "description": "Widget Description",
+  "icon": "assets/icon.ico",
+  "preview": "defaultPreview.png",
+  "excludeItems": [],
+  "setup": {
+    "createDesktopShortcut": true,
+    "createStartupShortcut": false,
+    "runOnStartup": false,
+    "installDir": "%ProgramFiles%\\CleanTime",
+    "startMenuFolder": "CleanTime",
+    "setupName": "setup",
+    "setupIcon": "assets/icon.ico",
+    "enableUninstall": true,
+    "launchAfterInstall": false
+  }
+}
