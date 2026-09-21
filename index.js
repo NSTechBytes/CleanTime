@@ -21,22 +21,49 @@ function loadSettings() {
 }
 
 function save(key, value) {
-  try { app.storage.set(key, value); } catch (error) { console.log("CleanTime could not save a setting:", error); }
+  try {
+    app.storage.set(key, value);
+  } catch (error) {
+    console.log("CleanTime could not save a setting:", error);
+  }
 }
 
 function getClockData() {
   const now = new Date();
   const weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-  const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  const months = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DEC",
+  ];
   return {
-    time: String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0"),
-    date: weekdays[now.getDay()] + ", " + months[now.getMonth()] + " " + String(now.getDate()).padStart(2, "0"),
+    time:
+      String(now.getHours()).padStart(2, "0") +
+      ":" +
+      String(now.getMinutes()).padStart(2, "0"),
+    date:
+      weekdays[now.getDay()] +
+      ", " +
+      months[now.getMonth()] +
+      " " +
+      String(now.getDate()).padStart(2, "0"),
     scale: scale,
-    theme: theme
+    theme: theme,
   };
 }
 
-function publishClock() { ipcMain.send("CleanTime.clock", getClockData()); }
+function publishClock() {
+  ipcMain.send("CleanTime.clock", getClockData());
+}
 
 function setScale(value) {
   if (SCALE_OPTIONS.indexOf(value) === -1) return;
@@ -56,23 +83,43 @@ function setTheme(value) {
   publishClock();
 }
 
-function formatScale(value) { return value === 1 ? "1X" : String(value).replace(".0", "") + "X"; }
+function formatScale(value) {
+  return value === 1 ? "1X" : String(value).replace(".0", "") + "X";
+}
 
 function buildContextMenu() {
   return [
     {
       text: "Scale",
       items: SCALE_OPTIONS.map(function (value) {
-        return { text: formatScale(value), checked: scale === value, action: function () { setScale(value); } };
-      })
+        return {
+          text: formatScale(value),
+          checked: scale === value,
+          action: function () {
+            setScale(value);
+          },
+        };
+      }),
     },
     {
       text: "Theme",
       items: [
-        { text: "Light", checked: theme === "light", action: function () { setTheme("light"); } },
-        { text: "Dark", checked: theme === "dark", action: function () { setTheme("dark"); } }
-      ]
-    }
+        {
+          text: "Light",
+          checked: theme === "light",
+          action: function () {
+            setTheme("light");
+          },
+        },
+        {
+          text: "Dark",
+          checked: theme === "dark",
+          action: function () {
+            setTheme("dark");
+          },
+        },
+      ],
+    },
   ];
 }
 

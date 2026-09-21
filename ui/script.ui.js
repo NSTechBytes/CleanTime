@@ -97,7 +97,8 @@ function updateClock(data) {
 // creation, invoke returns immediately and cannot be missed by the UI script.
 const startupSettings = ipcRenderer.invoke("CleanTime.getSettings");
 if (startupSettings) {
-  if (typeof startupSettings.scale === "number") currentScale = startupSettings.scale;
+  if (typeof startupSettings.scale === "number")
+    currentScale = startupSettings.scale;
   if (THEME[startupSettings.theme]) currentTheme = startupSettings.theme;
 }
 
