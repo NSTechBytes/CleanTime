@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) 2026 nstechbytes
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { app, widgetWindow } from "novadesk";
 
 const SCALE_OPTIONS = [0.75, 1, 1.25, 1.5, 1.75, 2];
@@ -53,9 +67,12 @@ function getClockData() {
     "DEC",
   ];
   const hours = now.getHours();
-  const displayHours = use24Hour ? hours : (hours % 12 || 12);
+  const displayHours = use24Hour ? hours : hours % 12 || 12;
   return {
-    time: String(displayHours).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0"),
+    time:
+      String(displayHours).padStart(2, "0") +
+      ":" +
+      String(now.getMinutes()).padStart(2, "0"),
     date:
       weekdays[now.getDay()] +
       ", " +
@@ -78,7 +95,11 @@ function setScale(value) {
   scale = value;
   save(STORAGE.scale, scale);
   clockWindow.setContextMenu(buildContextMenu());
-  ipcMain.send("CleanTime.settings", { scale: scale, theme: theme, use24Hour: use24Hour });
+  ipcMain.send("CleanTime.settings", {
+    scale: scale,
+    theme: theme,
+    use24Hour: use24Hour,
+  });
   publishClock();
 }
 
@@ -87,7 +108,11 @@ function setTheme(value) {
   theme = value;
   save(STORAGE.theme, theme);
   clockWindow.setContextMenu(buildContextMenu());
-  ipcMain.send("CleanTime.settings", { scale: scale, theme: theme, use24Hour: use24Hour });
+  ipcMain.send("CleanTime.settings", {
+    scale: scale,
+    theme: theme,
+    use24Hour: use24Hour,
+  });
   publishClock();
 }
 
@@ -96,7 +121,11 @@ function setTimeFormat(value) {
   use24Hour = value;
   save(STORAGE.use24Hour, use24Hour);
   clockWindow.setContextMenu(buildContextMenu());
-  ipcMain.send("CleanTime.settings", { scale: scale, theme: theme, use24Hour: use24Hour });
+  ipcMain.send("CleanTime.settings", {
+    scale: scale,
+    theme: theme,
+    use24Hour: use24Hour,
+  });
   publishClock();
 }
 
@@ -140,8 +169,20 @@ function buildContextMenu() {
     {
       text: "Time Format",
       items: [
-        { text: "12 Hour", checked: !use24Hour, action: function () { setTimeFormat(false); } },
-        { text: "24 Hour", checked: use24Hour, action: function () { setTimeFormat(true); } },
+        {
+          text: "12 Hour",
+          checked: !use24Hour,
+          action: function () {
+            setTimeFormat(false);
+          },
+        },
+        {
+          text: "24 Hour",
+          checked: use24Hour,
+          action: function () {
+            setTimeFormat(true);
+          },
+        },
       ],
     },
   ];
@@ -162,7 +203,11 @@ clockWindow = new widgetWindow({
 clockWindow.setContextMenu(buildContextMenu());
 
 ipcMain.on("CleanTime.ready", function () {
-  ipcMain.send("CleanTime.settings", { scale: scale, theme: theme, use24Hour: use24Hour });
+  ipcMain.send("CleanTime.settings", {
+    scale: scale,
+    theme: theme,
+    use24Hour: use24Hour,
+  });
   publishClock();
 });
 

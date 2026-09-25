@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) 2026 nstechbytes
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 let currentScale = 1;
 let currentTheme = "light";
 let currentUse24Hour = true;
@@ -84,7 +98,14 @@ function updateClock(data) {
   if (typeof data.use24Hour === "boolean") currentUse24Hour = data.use24Hour;
   if (typeof data.time === "string") timeText = data.time;
   if (!currentUse24Hour && typeof data.period === "string") {
-    timeText += " <size=" + Math.round(20 * currentScale) + "><color=" + THEME[currentTheme].date + ">" + data.period + "</color></size>";
+    timeText +=
+      " <size=" +
+      Math.round(20 * currentScale) +
+      "><color=" +
+      THEME[currentTheme].date +
+      ">" +
+      data.period +
+      "</color></size>";
   }
   if (typeof data.date === "string") dateText = data.date;
 
@@ -105,10 +126,18 @@ if (startupSettings) {
   if (typeof startupSettings.scale === "number")
     currentScale = startupSettings.scale;
   if (THEME[startupSettings.theme]) currentTheme = startupSettings.theme;
-  if (typeof startupSettings.use24Hour === "boolean") currentUse24Hour = startupSettings.use24Hour;
+  if (typeof startupSettings.use24Hour === "boolean")
+    currentUse24Hour = startupSettings.use24Hour;
   if (typeof startupSettings.time === "string") timeText = startupSettings.time;
   if (!currentUse24Hour && typeof startupSettings.period === "string") {
-    timeText += " <size=" + Math.round(20 * currentScale) + "><color=" + THEME[currentTheme].date + ">" + startupSettings.period + "</color></size>";
+    timeText +=
+      " <size=" +
+      Math.round(20 * currentScale) +
+      "><color=" +
+      THEME[currentTheme].date +
+      ">" +
+      startupSettings.period +
+      "</color></size>";
   }
   if (typeof startupSettings.date === "string") dateText = startupSettings.date;
 }
@@ -118,7 +147,8 @@ ipcRenderer.on("CleanTime.settings", function (event, settings) {
   if (!settings) return;
   if (typeof settings.scale === "number") currentScale = settings.scale;
   if (THEME[settings.theme]) currentTheme = settings.theme;
-  if (typeof settings.use24Hour === "boolean") currentUse24Hour = settings.use24Hour;
+  if (typeof settings.use24Hour === "boolean")
+    currentUse24Hour = settings.use24Hour;
   render();
 });
 ipcRenderer.on("CleanTime.clock", function (event, data) {

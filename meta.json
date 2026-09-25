@@ -3,18 +3,21 @@
   "main": "index.js",
   "version": "1.0.0.0",
   "minimumNovadeskVersion": "0.9.11.0",
-  "author": "NSTechBytes",
+  "author": "nstechbytes",
   "description": "A clean, minimalist desktop clock with adjustable scale and light or dark themes.",
   "icon": "assets/icon.ico",
-  "preview": "defaultPreview.png",
-  "excludeItems": [],
+  "preview": "Preview.png",
+  "excludeItems": [
+    ".git",
+    "dist"
+  ],
   "setup": {
     "createDesktopShortcut": true,
     "createStartupShortcut": false,
     "runOnStartup": false,
     "installDir": "%ProgramFiles%\\CleanTime",
     "startMenuFolder": "CleanTime",
-    "setupName": "setup",
+    "setupName": "CleanTime_Setup",
     "setupIcon": "assets/icon.ico",
     "enableUninstall": true,
     "launchAfterInstall": false
