@@ -1,7 +1,7 @@
 {
   "name": "CleanTime",
   "main": "index.js",
-  "version": "1.0.0.0",
+  "version": "1.0",
   "minimumNovadeskVersion": "0.9.11.0",
   "author": "nstechbytes",
   "description": "A clean, minimalist desktop clock with adjustable scale and light or dark themes.",
