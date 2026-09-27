@@ -23,7 +23,7 @@ const STORAGE = {
 };
 
 let scale = 1;
-let theme = "light";
+let theme = "dark";
 let use24Hour = true;
 let clockWindow = null;
 let timer = null;
