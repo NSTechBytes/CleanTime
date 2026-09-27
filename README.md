@@ -39,7 +39,7 @@ The widget includes:
 
 Download the latest widget package (`.ndpkg`) from the project releases:
 
-[Download CleanTime_v1.0.0.0.ndpkg](https://github.com/NSTechBytes/CleanTime/releases)
+[Download CleanTime_v1.0.ndpkg](https://github.com/NSTechBytes/CleanTime/releases)
 
 Double-click the downloaded `.ndpkg` file to install it directly with Novadesk. Novadesk must be installed before opening the package.
 
